@@ -6,7 +6,38 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+.signupform{
+  max-width: 500px;
+  margin: auto
+}
+input,select{
+  height: 40px;
+  width: 100%;
+  display: block;
+  margin-bottom: 16px;
+}
+button{
+  height: 40px;
+  padding:12px;
+  background-color: #282c34;
+  width: 100%;
+  display: block;
+  color: white;
+}
+.error{
+  background-color: red;
+  border-radius: 12px;
+  padding: 12px;
+  color: white !important;
+  font-size: 20px;
+}
+.success{
+  background-color: green;
+  border-radius: 12px;
+  padding: 12px;
+  color: white !important;
+  font-size: 20px;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
