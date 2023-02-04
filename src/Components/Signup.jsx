@@ -132,13 +132,13 @@ const Signup = () => {
             <MenuItem value="client">Client</MenuItem>
           </Select>
           <Button
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, fontWeight: "bold" }}
             variant="contained"
             type="submit"
             onClick={(e) => handleSubmit(e)}
             endIcon={<SendIcon />}
           >
-            Hello World
+            Signup
           </Button>
         </form>
       </Paper>
