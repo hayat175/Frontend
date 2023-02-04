@@ -1,62 +1,149 @@
-import {useState} from "react"
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
+import Input from "./fields/Input";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import Alert from "@mui/material/Alert";
+import Select from "@mui/material/Select";
+import { MenuItem, Paper, Typography, Stack, InputLabel } from "@mui/material";
 
-const Signup = () =>{
-    const [firstname, setFirstName] = useState("");
-    const [lastname, setLastName] = useState("");
-    const [username, setUserName] = useState("");
-    const [password, setPassword] = useState("");
-    const [usertype, setUserType] = useState("admin");
-    const [errors, setErrors] = useState("");
-    const [success, setSuccess] = useState("");
-    const handleSubmit = (event) =>{
-        console.log(firstname, lastname, username, password, usertype);
-        event.preventDefault();
-        console.log("submit")
-        axios.post('http://localhost:3000/signup', {
-            
-            userName: username,
-            password: password,
-            userType: usertype,
-            data: {
-                firstName: firstname,
-                lastName: lastname,
-            }
-          })
-          .then(function (response) {
-            console.log(response);
-            setErrors("")
-            setSuccess("Record added successfully")
-          })
-          .catch(function (error) {
-            setErrors(error.response.data.error)
-            console.log(error.response);
-            setSuccess("")
-          });
+const Signup = () => {
+  const [formdata, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    username: "",
+    password: "",
+    dob: "",
+    age: "",
+    usertype: "admin",
+  });
+  const [errors, setErrors] = useState("");
+  const [success, setSuccess] = useState("");
+  const [show, setShow] = useState(false);
+
+  const handleChange = (e) => {
+    const selectValue = e.target.value;
+    setFormData({ ...formdata, [e.target.name]: e.target.value });
+    if (selectValue === "client") {
+      setShow(true);
+    } else {
+      setShow(false);
     }
-    return(
-        <section className="signupform">
-        <h1>Signup</h1>
-        {errors !== "" && (<h6 className="error">{errors}</h6>)}
-        {success !== "" && (<h6 className="success">{success}</h6>)}
+  };
+  const handleSubmit = async (event) => {
+    console.log(formdata);
+    event.preventDefault();
+    console.log("submit");
+
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_BASEURL}/signup`, {
+        userName: formdata.username,
+        password: formdata.password,
+        userType: formdata.usertype,
+        data: {
+          firstName: formdata.firstname,
+          lastName: formdata.lastname,
+        },
+      });
+      if (res.status === 200) {
+        setErrors("");
+        setSuccess("Record added successfully");
+      }
+    } catch (error) {
+      setErrors(error.response.data.error);
+      console.log(error.response);
+      setSuccess("");
+    }
+  };
+  return (
+    <Stack sx={{ minHeight: "100vh" }} alignItems="center">
+      <Paper elevation={4} sx={{ p: 4, width: "600px", margin: "auto" }}>
+        <Typography variant="h4" align="center" sx={{ fontWeight: "bold" }}>
+          Signup
+        </Typography>
+        {errors !== "" && <Alert severity="error">{errors}!</Alert>}
+        {success !== "" && <Alert severity="success">{success}</Alert>}
         <form>
-            <label htmlFor="firstname">Enter first name</label>
-            {firstname}
-            <input id="firstname" type="text" name="firstname" value={firstname} onChange={(e)=>{setFirstName(e.target.value)}} />
-            <label htmlFor="lastname">Enter last name</label>
-            <input id="lastname" type="text" name="lastname" value={lastname} onChange={(e)=>{setLastName(e.target.value)}} />
-            <label htmlFor="username">Enter user name</label>
-            <input id="username" type="text" name="username" value={username} onChange={(e)=>{setUserName(e.target.value)}} />
-            <label htmlFor="password">Enter password</label>
-            <input id="password" type="password" name="password" value={password} onChange={(e)=>{setPassword(e.target.value)}} />
-            <label htmlFor="usertype">Enter usertype</label>
-            <select name="usertype" id="usertype" value={usertype} onChange={(e)=>{setUserType(e.target.value)}}>
-                <option value="admin">Admin</option>
-            </select>
-            <button type="submit" onClick={(e) => handleSubmit(e)}>Submit</button>
+          <Input
+            label="Enter first name"
+            value="firstname"
+            type="text"
+            formdata={formdata}
+            maxlength="10"
+            placeholder="Enter first name"
+            handleChange={handleChange}
+          />
+
+          <Input
+            label="Enter last name"
+            value="lastname"
+            type="text"
+            formdata={formdata}
+            handleChange={handleChange}
+          />
+
+          <Input
+            label="Enter user name"
+            value="username"
+            type="text"
+            formdata={formdata}
+            handleChange={handleChange}
+          />
+
+          <Input
+            label="Enter password"
+            value="password"
+            type="password"
+            formdata={formdata}
+            handleChange={handleChange}
+          />
+
+          {show && (
+            <>
+              <Input
+                label="Enter DOB"
+                value="dob"
+                type="text"
+                formdata={formdata}
+                handleChange={handleChange}
+              />
+
+              <Input
+                label="Enter age"
+                value="age"
+                type="text"
+                formdata={formdata}
+                handleChange={handleChange}
+              />
+            </>
+          )}
+          <InputLabel id="demo-simple-select-label">Enter usertype</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            name="usertype"
+            fullWidth
+            margin="normal"
+            id="demo-simple-select"
+            label="Enter usertype"
+            value={formdata.usertype}
+            onChange={(e) => handleChange(e)}
+          >
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="client">Client</MenuItem>
+          </Select>
+          <Button
+            sx={{ mt: 3 }}
+            variant="contained"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            endIcon={<SendIcon />}
+          >
+            Hello World
+          </Button>
         </form>
-        </section>
-    )
-}
+      </Paper>
+    </Stack>
+  );
+};
 
 export default Signup;
