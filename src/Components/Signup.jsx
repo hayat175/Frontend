@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Input from "./fields/Input";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 import Alert from "@mui/material/Alert";
 import Select from "@mui/material/Select";
-import { MenuItem, Paper, Typography, Stack, InputLabel } from "@mui/material";
+import {
+  MenuItem,
+  Paper,
+  Typography,
+  Stack,
+  InputLabel,
+  Box,
+  Link,
+} from "@mui/material";
 
 const Signup = () => {
   const [formdata, setFormData] = useState({
@@ -22,14 +30,17 @@ const Signup = () => {
   const [show, setShow] = useState(false);
 
   const handleChange = (e) => {
-    const selectValue = e.target.value;
+    // const selectValue = e.target.value;
     setFormData({ ...formdata, [e.target.name]: e.target.value });
-    if (selectValue === "client") {
+  };
+  useEffect(() => {
+    if (formdata.usertype === "client") {
       setShow(true);
     } else {
       setShow(false);
     }
-  };
+  }, [formdata]);
+
   const handleSubmit = async (event) => {
     console.log(formdata);
     event.preventDefault();
@@ -43,6 +54,8 @@ const Signup = () => {
         data: {
           firstName: formdata.firstname,
           lastName: formdata.lastname,
+          dob: formdata.dob,
+          age: formdata.age,
         },
       });
       if (res.status === 200) {
@@ -141,6 +154,9 @@ const Signup = () => {
             Signup
           </Button>
         </form>
+        <Box align="center" mt={3}>
+          <Link href="/login">Already have a account! Login</Link>
+        </Box>
       </Paper>
     </Stack>
   );
