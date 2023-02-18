@@ -14,14 +14,26 @@ import {
   Link,
   Box,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { LOGIN } from "../redux/actions";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isLoggedIn } = useSelector((state) => state.loginReducer);
   const [formdata, setFormData] = useState({
     username: "",
     password: "",
   });
   const [errors, setErrors] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  }, [isLoggedIn]);
 
   const handleChange = (e) => {
     // const selectValue = e.target.value;
@@ -39,6 +51,12 @@ const Login = () => {
         password: formdata.password,
       });
       if (res.status === 200) {
+        console.log(res.data);
+        dispatch({
+          type: LOGIN,
+          payload: res.data,
+        });
+        navigate("/dashboard");
         setErrors("");
         setSuccess("Login successfully");
       }

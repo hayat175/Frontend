@@ -16,15 +16,30 @@ import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { Button } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { LOGOUT } from "../redux/actions";
 
 const drawerWidth = 240;
 
 function Dashboard(props) {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.loginReducer);
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  console.log(user.item.firstName);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch({
+      type: LOGOUT,
+    });
+  };
+
+  const handleUploadImage = (e) => {
+    console.log(e.target.files[0]);
   };
 
   const drawer = (
@@ -32,16 +47,22 @@ function Dashboard(props) {
       <Toolbar />
       <Divider />
       <List>
-        {["Upload Docs"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Upload Docs" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding onClick={handleLogout}>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );
@@ -59,7 +80,7 @@ function Dashboard(props) {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -71,6 +92,10 @@ function Dashboard(props) {
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             Dashboard
+          </Typography>
+          <Typography variant="h6" noWrap component="div">
+            Welcome {user.item.firstName}
+            Role: {user.kind}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -121,7 +146,10 @@ function Dashboard(props) {
         }}
       >
         <Toolbar />
-        <Typography paragraph>Lorem ipsum dolor sit amet,</Typography>
+        <Box>
+          <input type="file" onChange={handleUploadImage}></input>
+          <Button variant="contained">Upload</Button>
+        </Box>
       </Box>
     </Box>
   );
