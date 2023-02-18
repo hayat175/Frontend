@@ -10,7 +10,7 @@ const loginReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: true,
-        user: payload?.user,
+        user: payload,
       };
 
     case LOGOUT:
